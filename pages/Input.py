@@ -371,8 +371,8 @@ else:
 
 
 @st.cache_data
-def create_images(N):
-    return [Image.fromarray(np.full((300, 300, 3), 255, dtype=np.uint8)) for _ in range(N)]
+def create_array(N):
+    return np.range(10)
 
 if "images_output" in st.session_state:
     images_output = st.session_state["images_output"]
