@@ -300,7 +300,7 @@ h_line_color_2 = "green"
 v_line_color_1 = "red"
 v_line_color_2 = "black"
 bg_color = "#eee"
-
+N=1
 
 st.markdown("<h1 style='text-align: left;'>Upload Lithofacies Image</h1>", unsafe_allow_html=True)
 bg_image = st.file_uploader("Upload the Lithofacies Images:", type=["png", "jpg"])
@@ -386,30 +386,10 @@ predict_button = st.button('Digitze Curves')
 st.markdown("<hr style='border-top: 2px solid ; margin-top: 0;'/>", unsafe_allow_html=True)
 
 
-def plot_results(results, re_img, colors):
-    images = []
-    for i in range(N):
-        fig, ax = plt.subplots(figsize=(10,10*re_img.shape[0]/re_img.shape[1]))
-        ax.imshow(re_img, cmap='jet',alpha=0.2)
-        ax.plot(results[i][0], results[i][1], alpha=1, linewidth=1, marker='.',markersize=0.55,c=colors[i])
-        ax.set_title('Prediction '+str(i+1))
-        fig.subplots_adjust(wspace=0.1, hspace=0.4)
-
-        # Convert the figure to an image
-        buf = io.BytesIO()
-        fig.savefig(buf, format="png")
-        buf.seek(0)
-        img = Image.open(buf)
-        images.append(img)
-
-        # Close the figure
-        plt.close(fig)
-
-    return images
-
 @st.cache_data
 def create_images(N):
     return [Image.fromarray(np.full((300, 300, 3), 255, dtype=np.uint8)) for _ in range(N)]
+
 
 if predict_button:
     if "images_list" in st.session_state:
@@ -420,19 +400,9 @@ if predict_button:
     st.success('Model Successfully Loaded From Delfi')
     image = Image.open(bg_image)
     re_img,re_mask = predict_curves(np.asarray(image),model)
-    st.success('Prediction Done ! Analyzing using Unsupervised Learning')
+    st.success('Prediction Done ! Showing Prediction')
     image = re_img
-    threshold = 32 # example threshold value
-    outputs, centers = predict_mask(re_img,re_mask,N)
-
-    n_focus = range(len(centers))
-    focus = [outputs[i] for i in n_focus]
-    focus = [mask_flattened(i) for i in focus]
-    results = [analyze_mask(i,'median',10) for i in focus]
-    st.session_state['results'] = results
-    st.success('Analysis Done ! Plotting Candidates Curve')
-    colors = ['#'+str(rgb_to_hex(tuple(i))) for i in list(np.array(centers)[np.array(n_focus)])]
-    images_list = plot_results(results,re_img,colors)
+    images_list = [re_mask]
     st.session_state["images_list"] = images_list
 
 
@@ -465,100 +435,8 @@ def get_table_download_link(df):
 
 
 def calculate_and_download_values():
-
-    if bg_image is None or st.session_state['results'] is None:
-        st.error("You Must do Prediction First")
-        return
     
-    if not any(st.session_state[f"prediction_{i}"] for i in range(1, 13)):
-        st.error("Pick at least one prediction to download")
-        return
-    
-    # Calculate the original and resized dimensions of the image
-
-    st.write("called")
-    image = Image.open(bg_image)
-    orig_width, orig_height = image.size
-    max_length = 800
-    if orig_height < max_length:
-        ratio = max_length / float(orig_height)
-        width = int(ratio * orig_width)
-        height = max_length
-    else:
-        width, height = orig_width, orig_height
-    
-    # Calculate the positions of the boundary lines
-
-    st.write(orig_width)
-    st.write(orig_height)
-
-    h_line_max_y = int(height * h_line_min_position / 100)
-    h_line_min_y = int(height * h_line_max_position / 100)
-    v_line_min_x = int(width * v_line_min_position / 100)
-    v_line_max_x = int(width * v_line_max_position / 100)
-
-    """
-    st.write("h line min max")
-    st.write(h_line_min_position)
-    st.write(h_line_max_position)
-    st.write("---------")
-    st.write("v line min max")
-    st.write(v_line_min_position)
-    st.write(v_line_max_position)
-    st.write("-----------")
-
-
-    st.write("min max y")
-    st.write(h_line_min_y)
-    st.write(h_line_max_y)
-    st.write("-----------")
-    st.write("min max x")
-    st.write(v_line_min_x)
-    st.write(v_line_max_x)
-    st.write("scale x y")
-    st.write(x_axis_scale)
-    st.write(y_axis_scale)
-
-    """
-
-    # Select the results based on the checked checkboxes
-    sel_results = [st.session_state['results'][i] for i in range(12) if st.session_state[f"prediction_{i + 1}"]]
-    st.write(sel_results)
-    # Filter the results based on the boundary lines
-    filtered_results = []
-    for X, Y in sel_results:
-        mask = (X >= v_line_min_x) & (X <= v_line_max_x) & (Y >= h_line_min_y) & (Y <= h_line_max_y)
-        filtered_X = X[mask]
-        filtered_Y = Y[mask]
-        st.write(filtered_X )
-        st.write(filtered_Y)
-        # Calculate the relative positions of the points
-        rel_X = (filtered_X - v_line_min_x) / (v_line_max_x - v_line_min_x)
-        rel_Y = (filtered_Y - h_line_min_y) / (h_line_max_y - h_line_min_y)
-        
-        # Convert the relative positions to actual values based on the axis scales and min/max values
-        if x_axis_scale == "log":
-            act_X = np.power(10, rel_X * (np.log10(float(x_max_value)) - np.log10(float(x_min_value))) + np.log10(float(x_min_value)))
-        else:
-            act_X = rel_X * (float(x_max_value) - float(x_min_value)) + float(x_min_value)
-        
-        if y_axis_scale == "log":
-            act_Y = np.power(10, rel_Y * (np.log10(float(y_max_value)) - np.log10(float(y_min_value))) + np.log10(float(y_min_value)))
-        else:
-            act_Y = rel_Y * (float(y_max_value) - float(y_min_value)) + float(y_min_value)
-        
-        filtered_results.append((act_X, act_Y))
-    
-    # Create a multi-indexed DataFrame from the result
-    df_data = {}
-    for i, (X, Y) in enumerate(filtered_results):
-        df_data[f"Curve-{i + 1}"] = {"X": X, "Y": Y}
-    st.write("Below is dataframe in dict")
-    st.write(df_data)
-    df = pd.DataFrame(df_data).stack().apply(pd.Series).reset_index(level=1).rename(columns={"level_1": "Curve"})
-    st.write("Below is dataframe in df")
-    st.write(df)
-
+    df = pd.DataFrame([])
     # Download the DataFrame as an Excel file
     st.session_state['df'] = df
 
