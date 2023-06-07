@@ -148,7 +148,7 @@ def predict_litho(img,model):
     re_mask_l = new_data
     re_img = uncrop_image_v2(c_img,ri), re_mask_l
     
-    return re_img, re_mask
+    return re_img, re_mask, re_mask_l
 
 
 def mask_flattened(c_msk):
