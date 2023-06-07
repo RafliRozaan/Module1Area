@@ -378,8 +378,6 @@ if bg_image is not None:
         drawing_mode=drawing_mode,
         height=height,
         width=width,)
-    with col4:
-        st.image(images_list[0])
 
 with col4:
     st.image(images_list[0])
