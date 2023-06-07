@@ -547,7 +547,10 @@ def calculate_and_download_values():
     df.to_csv('dataframe.csv')
 
 st.markdown("<h2 style='text-align: left;'>Calculate and Download Values</h2>", unsafe_allow_html=True)
-calculate_button = st.button('Generate Download Links', on_click=calculate_and_download_values)
+aa,ee,oo = st.columns((1,1,1))
+
+with ee:
+    calculate_button = st.button('Generate Download Links', on_click=calculate_and_download_values)
 
 if 'df' in st.session_state:
     with open('dataframe.csv') as f:
