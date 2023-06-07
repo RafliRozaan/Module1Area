@@ -377,7 +377,7 @@ def create_array():
 if "images_output" in st.session_state:
     images_output = st.session_state["images_output"]
 else:
-    images_output = create_array()
+    images_output = create_images(N)
 
 
 @st.cache_data
@@ -502,7 +502,7 @@ if predict_button:
     images_list = [re_mask_l]
     st.session_state["images_list"] = images_list
     area_data = filter_data(np.array(percentages(re_mask)))
-    images_output = create_image(area_data, 1000)
+    images_output = [create_image(area_data, 1000)]
 
 
 st.markdown(
@@ -523,14 +523,14 @@ if bg_image is not None:
     with col4:
         st.image(images_list[0],width=300)
     with col5:
-        st.image(images_output,width=300)
+        st.image(images_output[0],width=300)
 else:
     with col4:
         st.image(images_list[0],width=300)
     with col3:
         st.image(images_list[0],width=300)
     with col5:
-        st.image(images_output,width=300)
+        st.image(images_output[0],width=300)
 # Define the predict_button variable before it is used
 
 def get_table_download_link(df):
