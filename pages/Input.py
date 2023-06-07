@@ -377,8 +377,10 @@ if bg_image is not None:
         update_streamlit=realtime_update,
         drawing_mode=drawing_mode,
         height=height,
-        width=width,
-    )
+        width=width,)
+    with col4:
+        st.image(images_list[0])
+
 with col4:
     st.image(images_list[0])
 
