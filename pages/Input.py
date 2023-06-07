@@ -369,6 +369,17 @@ if "images_list" in st.session_state:
 else:
     images_list = create_images(N)
 
+
+@st.cache_data
+def create_images(N):
+    return [Image.fromarray(np.full((300, 300, 3), 255, dtype=np.uint8)) for _ in range(N)]
+
+if "images_output" in st.session_state:
+    images_output = st.session_state["images_output"]
+else:
+    images_output = create_images(N)
+
+
 # Calculate the y-coordinates of the horizontal lines and the x-coordinates of the vertical lines based on the slider values
 
 # Create a canvas component
@@ -378,6 +389,93 @@ st.markdown("<hr style='border-top: 2px solid ; margin-top: 0;'/>", unsafe_allow
 st.markdown("<h2 style='text-align: left;'>Lithofacies Predictions</h2>", unsafe_allow_html=True)
 predict_button = st.button('Digitze Lithofacies')
 st.markdown("<hr style='border-top: 2px solid ; margin-top: 0;'/>", unsafe_allow_html=True)
+
+
+
+
+# Define a function that takes the data array, width and height as arguments
+def create_image(data, width):
+    # Initialize an empty array of shape (height, width, 1) to store the output image
+    image = np.zeros((data.shape[0], width, 1))
+
+    # Loop through each row of the data array
+    for i in range(data.shape[0]):
+        # Get the percentage values of the three classes for the current row
+        p1, p2, p3 = data[i]
+
+        # Calculate the number of pixels for each class based on the width and percentage
+        if p1+p2+p3 > 50:
+            n1 = int(np.floor(p1 * width / 100))
+            n2 = int(np.floor(p2 * width / 100))
+            n3 = width - n1 - n2
+
+            # Fill the corresponding pixels in the image array with different values for each class
+            # For example, you can use 0 for class 1, 127 for class 2 and 255 for class 3
+            image[i, :n1, 0] = 30
+            image[i, n1:n1+n2, 0] = 127
+            image[i, n1+n2:n1+n2+n3, 0] = 180
+
+    # Return the image array
+    return image
+
+
+def percentages(image):
+    # Step 1: Calculate the 3 most common pixel values in the image. Ignore pixel of value 9 in this calculation (only consider 0-9). Lets call this the_3
+    pixel_values = np.unique(image[image != 9])
+    pixel_counts = [len(image[image == i]) for i in pixel_values]
+    sorted_pixel_counts = sorted(pixel_counts, reverse=True)
+    the_3 = [pixel_values[pixel_counts.index(sorted_pixel_counts[i])] for i in range(3)]
+    
+    # Step 2: Iterate through every row of the image, calculate the number of the 3 most common pixel, and calculate the percentage of each pixel based on the total number of the_3 in that row. Output the result as a row of 3 column, one for each pixel value in the_3.
+    percentages = []
+    for row in image:
+        row_counts = [len(row[row == i]) for i in the_3]
+        total_count = sum(row_counts)
+        row_percentages = [count / total_count * 100 if total_count > 0 else 0 for count in row_counts]
+        percentages.append(row_percentages)
+    
+    return percentages
+
+def filter_data(data):
+    # Initialize an empty list to store the indices of the rows to keep
+    keep = []
+
+    # Loop through each row of the data array
+    for i in range(data.shape[0]):
+        if data[i,:].sum() > 10:
+            keep.append(i)
+    return np.take(data, keep, axis=0)
+
+def create_image(data, width):
+    # Initialize an empty array of shape (height, width, 1) to store the output image
+    image = np.zeros((data.shape[0], width, 1))
+
+    # Loop through each row of the data array
+    for i in range(data.shape[0]):
+        # Get the percentage values of the three classes for the current row
+        p1, p2, p3 = data[i]
+
+        # Calculate the number of pixels for each class based on the width and percentage
+        if p1+p2+p3 > 50:
+            n1 = int(np.floor(p1 * width / 100))
+            n2 = int(np.floor(p2 * width / 100))
+            n3 = width - n1 - n2
+
+            # Fill the corresponding pixels in the image array with different values for each class
+            # For example, you can use 0 for class 1, 127 for class 2 and 255 for class 3
+            image[i, :n1, 0] = 30
+            image[i, n1:n1+n2, 0] = 127
+            image[i, n1+n2:n1+n2+n3, 0] = 180
+
+    # Return the image array
+    return image
+
+
+
+
+
+
+
 
 
 if predict_button:
@@ -393,6 +491,8 @@ if predict_button:
     image = re_img
     images_list = [re_mask]
     st.session_state["images_list"] = images_list
+    images_output = create_image(filter_data(np.array(percentages(re_mask))), 1000)
+
 
 
 st.markdown(
@@ -412,12 +512,15 @@ if bg_image is not None:
         st.image(image,width=300)
     with col4:
         st.image(images_list[0],width=300)
+    with col5:
+        st.image(images_output[0],width=300)
 else:
     with col4:
         st.image(images_list[0],width=300)
     with col3:
         st.image(images_list[0],width=300)
-
+    with col5:
+        st.image(images_output[0],width=images_output[1]/image.shape[1]*300)
 # Define the predict_button variable before it is used
 
 def get_table_download_link(df):
