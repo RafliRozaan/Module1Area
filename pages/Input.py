@@ -397,7 +397,10 @@ else:
 st.markdown("<h2 style='text-align: left;'></h2>", unsafe_allow_html=True)  
 st.markdown("<hr style='border-top: 2px solid ; margin-top: 0;'/>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: left;'>Lithofacies Predictions</h2>", unsafe_allow_html=True)
-predict_button = st.button('Digitze Lithofacies')
+
+pol,poi,pou = st.columns((1,1,1))
+with poi:
+    predict_button = st.button('Digitze Lithofacies')
 st.markdown("<hr style='border-top: 2px solid ; margin-top: 0;'/>", unsafe_allow_html=True)
 
 
