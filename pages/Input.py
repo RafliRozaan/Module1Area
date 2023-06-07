@@ -259,10 +259,10 @@ def load_model():
 
     client = dataiku.set_remote_dss(host, apiKey)
 
-    model_folder = dataiku.Folder("Module1",'MODULE1')
+    model_folder = dataiku.Folder("Module1-2",'MODULE1')
     model_path = model_folder.list_paths_in_partition()
 
-    tmp_file_path = 'better_predictor_v5.h5'
+    tmp_file_path = 'model_final_lf.h5'
 
     with open(tmp_file_path, "wb") as tmp_file:
         with model_folder.get_download_stream(model_path[0]) as model_weight_file:
@@ -281,34 +281,21 @@ col1, col2 = st.sidebar.columns(2)
 # Add sliders to control the positions of the horizontal lines in the first column
 with col1:
     st.markdown("<div class='column'>", unsafe_allow_html=True)
-    st.markdown("<b>Y-Axis</b>", unsafe_allow_html=True)
-    y_axis_scale = st.selectbox("Scale", ["normal", "log"], key="y_axis_scale")
-    y_min_value = st.number_input("Value min", key="y_min_value")
-    y_max_value = st.number_input("Value max", key="y_max_value")
-    st.markdown("<b><span style='color:green'>Y-min (%):</span></b>", unsafe_allow_html=True)
-    h_line_min_position = st.slider("hmin", 0, 100, 75,key="ymin")
-    st.markdown("<b><span style='color:blue'>Y-max (%):</span></b>", unsafe_allow_html=True)
-    h_line_max_position = st.slider("hmax", 0, 100, 25,key="ymax")
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("<b>Depth-min</b>", unsafe_allow_html=True)
+    depth_min= st.number_input("Value max", key="y_max_value")
+
 
     # Add sliders to control the positions of the vertical lines in the second column
 with col2:
     st.markdown("<div class='column'>", unsafe_allow_html=True)
-    st.markdown("<b>X-Axis</b>", unsafe_allow_html=True)
-    x_axis_scale = st.selectbox("Scale", ["normal", "log"], key="x_axis_scale")
-    x_min_value = st.number_input("Value min", key="x_min_value")
+    st.markdown("<b>Depth-max</b>", unsafe_allow_html=True)
     x_max_value = st.number_input("Value max", key="x_max_value")
-    st.markdown("<b><span style='color:red'>X-min (%):</span></b>", unsafe_allow_html=True)
-    v_line_min_position = st.slider("vmin", 0, 100, 25,key="xmax")
-    st.markdown("<b><span style='color:black'>X-max (%):</span></b>", unsafe_allow_html=True)
-    v_line_max_position = st.slider("vmax", 0, 100, 75,key="xmin")
-    st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 # Specify canvas parameters in application
 drawing_mode = 'line'
 
-stroke_width = st.sidebar.slider("Stroke width: ", 1, 25, 2)
 h_line_color_1 = "blue"
 h_line_color_2 = "green"
 v_line_color_1 = "red"
