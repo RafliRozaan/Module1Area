@@ -145,8 +145,8 @@ def predict_litho(img,model):
     for k, v in color_map.items():
         new_data[re_mask[:, :, 0] == k] = v
 
-    re_mask = new_data
-    re_img = uncrop_image_v2(c_img,ri)
+    re_mask_l = new_data
+    re_img = uncrop_image_v2(c_img,ri), re_mask_l
     
     return re_img, re_mask
 
@@ -380,6 +380,16 @@ else:
     images_output = create_images(N)
 
 
+@st.cache_data
+def create_data():
+    return pd.DataFrame([1,2,3])
+
+if "area_data" in st.session_state:
+    area_data = st.session_state["area_data"]
+else:
+    area_data = create_data()
+
+
 # Calculate the y-coordinates of the horizontal lines and the x-coordinates of the vertical lines based on the slider values
 
 # Create a canvas component
@@ -486,13 +496,13 @@ if predict_button:
     model = load_model()
     st.success('Model Successfully Loaded From Delfi')
     image = Image.open(bg_image)
-    re_img,re_mask = predict_litho(np.asarray(image),model)
+    re_img,re_mask, re_mask_l = predict_litho(np.asarray(image),model)
     st.success('Prediction Done ! Showing Prediction')
     image = re_img
-    images_list = [re_mask]
+    images_list = [re_mask_l]
     st.session_state["images_list"] = images_list
-    images_output = create_image(filter_data(np.array(percentages(re_mask))), 1000)
-
+    area_data = filter_data(np.array(percentages(re_mask)))
+    images_output = create_image(area_data, 1000)
 
 
 st.markdown(
@@ -536,7 +546,8 @@ def get_table_download_link(df):
 
 def calculate_and_download_values():
     
-    df = pd.DataFrame([])
+    df = pd.DataFrame(area_data,columns=[0,1,2])
+    df['Depth'] = np.linspace(40,100,df.shape[0])
     # Download the DataFrame as an Excel file
     st.session_state['df'] = df
 
