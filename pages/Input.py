@@ -515,7 +515,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-col3, col4= st.columns((1,1,1))
+col3, col4= st.columns((1,1))
 if bg_image is not None:
     with col3:
         st.image(image,width=300)
