@@ -375,7 +375,6 @@ st.markdown(styles, unsafe_allow_html=True)
 st.sidebar.markdown("<hr/>", unsafe_allow_html=True)
 
 
-
 # Calculate the y-coordinates of the horizontal lines and the x-coordinates of the vertical lines based on the slider values
 h_line_min_y = int(height * h_line_min_position / 100)
 h_line_max_y = int(height * h_line_max_position / 100)
