@@ -546,7 +546,7 @@ def calculate_and_download_values():
     # Download the DataFrame as an Excel file
     st.session_state['df'] = df
 
-if 'df' in st.session_state:
+if st.button('clicked'):
     st.write(area_data)
     st.write(area_data.shape)
 
