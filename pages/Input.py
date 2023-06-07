@@ -523,7 +523,7 @@ if bg_image is not None:
     with col4:
         st.image(images_list[0],width=300)
     with col5:
-        st.image(images_output,width=images_output.shape[1]/image.shape[1]*300)
+        st.image(images_output,width=300)
 else:
     with col4:
         st.image(images_list[0],width=300)
