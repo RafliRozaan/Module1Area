@@ -124,7 +124,7 @@ def uncrop_image_v2(cropped_images, num_crops):
   # Return the output array as an integer type (to match the original image type)
   return output.astype(np.uint8)
 
-def predict_curves(img,model):
+def predict_litho(img,model):
     crop_sizes = 32*10
     c_img, ri = crop_image_v2(img,(crop_sizes,crop_sizes),255)
     p = []
@@ -132,9 +132,7 @@ def predict_curves(img,model):
         p.append(model.predict(c_img[i:i+1]/255.0))
     p = np.concatenate(p)
 
-    p[p <= 0.9] = 0
-    p[p > 0.9] = 1
-    re_mask = uncrop_image_v2(p,ri)
+    re_mask = uncrop_image_v2(np.expand_dims(np.argmax(p,-1),3),ri)
     re_img = uncrop_image_v2(c_img,ri)
     
     return re_img, re_mask
@@ -381,8 +379,8 @@ predict_button = False
 # Create the Predict button outside of any conditional blocks
 st.markdown("<h2 style='text-align: left;'></h2>", unsafe_allow_html=True)  
 st.markdown("<hr style='border-top: 2px solid ; margin-top: 0;'/>", unsafe_allow_html=True)
-st.markdown("<h2 style='text-align: left;'>Curve Predictions</h2>", unsafe_allow_html=True)
-predict_button = st.button('Digitze Curves')
+st.markdown("<h2 style='text-align: left;'>Lithofacies Predictions</h2>", unsafe_allow_html=True)
+predict_button = st.button('Digitze Lithofacies')
 st.markdown("<hr style='border-top: 2px solid ; margin-top: 0;'/>", unsafe_allow_html=True)
 
 
@@ -399,7 +397,7 @@ if predict_button:
     model = load_model()
     st.success('Model Successfully Loaded From Delfi')
     image = Image.open(bg_image)
-    re_img,re_mask = predict_curves(np.asarray(image),model)
+    re_img,re_mask = predict_litho(np.asarray(image),model)
     st.success('Prediction Done ! Showing Prediction')
     image = re_img
     images_list = [re_mask]
@@ -442,7 +440,7 @@ def calculate_and_download_values():
 
 
 st.markdown("<h2 style='text-align: left;'>Calculate and Download Values</h2>", unsafe_allow_html=True)
-calculate_button = st.button('Generate Download Links For Choosen Curves', on_click=calculate_and_download_values)
+calculate_button = st.button('Generate Download Links', on_click=calculate_and_download_values)
 
 if 'df' in st.session_state:
         st.markdown(get_table_download_link(st.session_state['df']), unsafe_allow_html=True)
