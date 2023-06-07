@@ -407,18 +407,14 @@ st.markdown(
 col3, col4, col5 = st.columns((1,1,1))
 if bg_image is not None:
     with col3:
-        canvas_result = st_canvas(
-        fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
-        stroke_width=1,
-        background_color=bg_color,
-        background_image=image if bg_image else None,
-        update_streamlit=realtime_update,
-        drawing_mode=drawing_mode,
-        height=height,
-        width=width)
-
-with col4:
-    st.image(images_list[0])
+        st.image(image)
+    with col4:
+        st.image(images_list[0])
+else:
+    with col4:
+        st.image(images_list[0])
+    with col3:
+        st.image(images_list[0])
 
 # Define the predict_button variable before it is used
 
