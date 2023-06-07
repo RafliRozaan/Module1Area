@@ -548,7 +548,7 @@ def calculate_and_download_values():
 
 if 'df' in st.session_state:
     st.write(area_data)
-
+    st.write(area_data.shape)
 
 st.markdown("<h2 style='text-align: left;'>Calculate and Download Values</h2>", unsafe_allow_html=True)
 calculate_button = st.button('Generate Download Links', on_click=calculate_and_download_values)
