@@ -495,10 +495,10 @@ if predict_button:
     st.success('Connecting to Dataiku DSS Platform')
     model = load_model()
     st.success('Model Successfully Loaded From Delfi')
-    image = Image.open(bg_image)
-    re_img,re_mask, re_mask_l = predict_litho(np.asarray(image),model)
+    imagee = Image.open(bg_image)
+    re_img,re_mask, re_mask_l = predict_litho(np.asarray(imagee),model)
     st.success('Prediction Done ! Showing Prediction')
-    image = re_img
+    imagee = re_img
     images_list = [re_mask_l]
     st.session_state["images_list"] = images_list
     area_data = filter_data(np.array(percentages(re_mask)))
@@ -544,7 +544,7 @@ def get_table_download_link(df):
 
 
 def calculate_and_download_values():
-    
+    st.write(area_data)
     df = pd.DataFrame(area_data,columns=[0,1,2])
     df['Depth'] = np.linspace(40,100,df.shape[0])
     # Download the DataFrame as an Excel file
