@@ -133,6 +133,11 @@ def predict_litho(img,model):
     p = np.concatenate(p)
 
     re_mask = uncrop_image_v2(np.expand_dims(np.argmax(p,-1),3),ri)
+
+    color_list = [0,20,40,60,80,100,120,140,160,255]
+    for i in range(10):
+        np.where(re_mask == i, color_list[i], re_mask, out=re_mask)
+
     re_img = uncrop_image_v2(c_img,ri)
     
     return re_img, re_mask
@@ -382,7 +387,6 @@ if bg_image is not None:
 with col4:
     st.image(images_list[0])
 
-
 # Define the predict_button variable before it is used
 predict_button = False
 
@@ -392,9 +396,6 @@ st.markdown("<hr style='border-top: 2px solid ; margin-top: 0;'/>", unsafe_allow
 st.markdown("<h2 style='text-align: left;'>Lithofacies Predictions</h2>", unsafe_allow_html=True)
 predict_button = st.button('Digitze Lithofacies')
 st.markdown("<hr style='border-top: 2px solid ; margin-top: 0;'/>", unsafe_allow_html=True)
-
-
-
 
 
 if predict_button:
@@ -410,9 +411,6 @@ if predict_button:
     image = re_img
     images_list = [re_mask]
     st.session_state["images_list"] = images_list
-
-
-
 
 
 st.markdown(
