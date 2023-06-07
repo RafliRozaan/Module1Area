@@ -136,7 +136,7 @@ def predict_litho(img,model):
 
     color_list = [0,20,40,60,80,100,120,140,160,255]
     for i in range(10):
-        np.where(re_mask == i, color_list[i], re_mask, out=re_mask)
+        re_mask[re_mask == i] = color_list[i]
 
     re_img = uncrop_image_v2(c_img,ri)
     
@@ -370,26 +370,6 @@ else:
 # Calculate the y-coordinates of the horizontal lines and the x-coordinates of the vertical lines based on the slider values
 
 # Create a canvas component
-
-col3, col4, col5 = st.columns((1,1,1))
-if bg_image is not None:
-    with col3:
-        canvas_result = st_canvas(
-        fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
-        stroke_width=1,
-        background_color=bg_color,
-        background_image=image if bg_image else None,
-        update_streamlit=realtime_update,
-        drawing_mode=drawing_mode,
-        height=height,
-        width=width)
-
-with col4:
-    st.image(images_list[0])
-
-# Define the predict_button variable before it is used
-predict_button = False
-
 # Create the Predict button outside of any conditional blocks
 st.markdown("<h2 style='text-align: left;'></h2>", unsafe_allow_html=True)  
 st.markdown("<hr style='border-top: 2px solid ; margin-top: 0;'/>", unsafe_allow_html=True)
@@ -423,6 +403,24 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+col3, col4, col5 = st.columns((1,1,1))
+if bg_image is not None:
+    with col3:
+        canvas_result = st_canvas(
+        fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
+        stroke_width=1,
+        background_color=bg_color,
+        background_image=image if bg_image else None,
+        update_streamlit=realtime_update,
+        drawing_mode=drawing_mode,
+        height=height,
+        width=width)
+
+with col4:
+    st.image(images_list[0])
+
+# Define the predict_button variable before it is used
 
 def get_table_download_link(df):
         """Generates a link allowing the data in a given panda dataframe to be downloaded
