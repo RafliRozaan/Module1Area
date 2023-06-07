@@ -323,12 +323,6 @@ if bg_image is not None:
     image = Image.fromarray(uncrop_image_v2(c_img,ri).astype('uint8'), 'RGB')
     width, height = image.size
     max_length = 1500
-    if height > max_length:
-        ratio = max_length / float(height)
-        width = int(ratio * width)
-        height = max_length
-        image = image.resize((width, height), Image.LANCZOS)
-        canvas_resized = True
 
 # Define the custom CSS styles
 styles = """
@@ -407,14 +401,14 @@ st.markdown(
 col3, col4, col5 = st.columns((1,1,1))
 if bg_image is not None:
     with col3:
-        st.image(image)
+        st.image(image,width=300)
     with col4:
-        st.image(images_list[0])
+        st.image(images_list[0],width=300)
 else:
     with col4:
-        st.image(images_list[0])
+        st.image(images_list[0],width=300)
     with col3:
-        st.image(images_list[0])
+        st.image(images_list[0],width=300)
 
 # Define the predict_button variable before it is used
 
