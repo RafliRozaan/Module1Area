@@ -540,11 +540,11 @@ def get_table_download_link(df):
 
 
 def calculate_and_download_values():
-    st.write(area_data)
     df = pd.DataFrame(area_data,columns=[0,1,2])
     df['Depth'] = np.linspace(40,100,df.shape[0])
     # Download the DataFrame as an Excel file
     st.session_state['df'] = df
+    df
     df.to_csv('dataframe.csv')
     with open('dataframe.csv') as f:
         st.download_button('Download CSV',f)
