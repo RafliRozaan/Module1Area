@@ -353,14 +353,22 @@ st.markdown(styles, unsafe_allow_html=True)
 # Add a horizontal line to separate the sections
 st.sidebar.markdown("<hr/>", unsafe_allow_html=True)
 
+@st.cache_data
+def create_images(N):
+    return [Image.fromarray(np.full((300, 300, 3), 255, dtype=np.uint8)) for _ in range(N)]
+
+if "images_list" in st.session_state:
+    images_list = st.session_state["images_list"]
+else:
+    images_list = create_images(N)
 
 # Calculate the y-coordinates of the horizontal lines and the x-coordinates of the vertical lines based on the slider values
 
 # Create a canvas component
 
-col3, col4 = st.columns((0.1,1))
+col3, col4 = st.columns((1,1))
 if bg_image is not None:
-    with col4:
+    with col3:
         canvas_result = st_canvas(
         fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
         stroke_width=1,
@@ -371,6 +379,8 @@ if bg_image is not None:
         height=height,
         width=width,
     )
+with col4:
+    st.image(images_list[0])
 
 
 # Define the predict_button variable before it is used
@@ -384,9 +394,7 @@ predict_button = st.button('Digitze Lithofacies')
 st.markdown("<hr style='border-top: 2px solid ; margin-top: 0;'/>", unsafe_allow_html=True)
 
 
-@st.cache_data
-def create_images(N):
-    return [Image.fromarray(np.full((300, 300, 3), 255, dtype=np.uint8)) for _ in range(N)]
+
 
 
 if predict_button:
@@ -404,10 +412,7 @@ if predict_button:
     st.session_state["images_list"] = images_list
 
 
-if "images_list" in st.session_state:
-    images_list = st.session_state["images_list"]
-else:
-    images_list = create_images(N)
+
 
 
 st.markdown(
