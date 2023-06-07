@@ -502,6 +502,7 @@ if predict_button:
     images_list = [re_mask_l]
     st.session_state["images_list"] = images_list
     area_data = filter_data(np.array(percentages(re_mask)))
+    st.session_state["area_data"] = images_list
     st.write(area_data)
 
 st.markdown(
