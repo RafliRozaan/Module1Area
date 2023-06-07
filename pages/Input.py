@@ -134,10 +134,18 @@ def predict_litho(img,model):
 
     re_mask = uncrop_image_v2(np.expand_dims(np.argmax(p,-1),3),ri)
 
-    color_list = [0,20,40,60,80,100,120,140,160,255]
-    for i in range(10):
-        re_mask[re_mask == i] = color_list[i]
+    color_map = {}
+    colors = random_color(9)
+    for i in range(9):
+        color_map[i] = colors[i]
+    color_map[9] = (255,255,255)
 
+    new_data = np.zeros(re_mask.shape[:2] + (3,), dtype=np.uint8)
+
+    for k, v in color_map.items():
+        new_data[re_mask[:, :, 0] == k] = v
+
+    re_mask = new_data
     re_img = uncrop_image_v2(c_img,ri)
     
     return re_img, re_mask
