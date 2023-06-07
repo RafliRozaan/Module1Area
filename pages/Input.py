@@ -355,7 +355,7 @@ st.sidebar.markdown("<hr/>", unsafe_allow_html=True)
 
 @st.cache_data
 def create_images(N):
-    return [Image.fromarray(np.full((300, 300, 3), 255, dtype=np.uint8)) for _ in range(N)]
+    return [Image.fromarray(np.full((255, 255, 3), 255, dtype=np.uint8)) for _ in range(N)]
 
 if "images_list" in st.session_state:
     images_list = st.session_state["images_list"]
