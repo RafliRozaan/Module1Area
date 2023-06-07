@@ -545,6 +545,9 @@ def calculate_and_download_values():
     df['Depth'] = np.linspace(40,100,df.shape[0])
     # Download the DataFrame as an Excel file
     st.session_state['df'] = df
+    df.to_csv('dataframe.csv')
+    with open('dataframe.csv') as f:
+        st.download_button('Download CSV',f)
 
 st.markdown("<h2 style='text-align: left;'>Calculate and Download Values</h2>", unsafe_allow_html=True)
 calculate_button = st.button('Generate Download Links', on_click=calculate_and_download_values)
