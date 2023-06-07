@@ -292,7 +292,6 @@ with col2:
     x_max_value = st.number_input("Value max", key="x_max_value")
 
 
-
 # Specify canvas parameters in application
 drawing_mode = 'line'
 
@@ -306,17 +305,12 @@ bg_color = "#eee"
 st.markdown("<h1 style='text-align: left;'>Upload Lithofacies Image</h1>", unsafe_allow_html=True)
 bg_image = st.file_uploader("Upload the Lithofacies Images:", type=["png", "jpg"])
 
-
-N = 12
-
 realtime_update = True
 accuracy = 1
 width = 800
 height = 800
 
 canvas_resized = False
-
-
 
 
 if bg_image is not None:
@@ -363,10 +357,6 @@ st.sidebar.markdown("<hr/>", unsafe_allow_html=True)
 
 
 # Calculate the y-coordinates of the horizontal lines and the x-coordinates of the vertical lines based on the slider values
-h_line_min_y = int(height * h_line_min_position / 100)
-h_line_max_y = int(height * h_line_max_position / 100)
-v_line_min_x = int(width * v_line_min_position / 100)
-v_line_max_x = int(width * v_line_max_position / 100)
 
 # Create a canvas component
 
@@ -375,91 +365,14 @@ if bg_image is not None:
     with col4:
         canvas_result = st_canvas(
         fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
-        stroke_width=stroke_width,
+        stroke_width=1,
         background_color=bg_color,
         background_image=image if bg_image else None,
         update_streamlit=realtime_update,
         drawing_mode=drawing_mode,
-        initial_drawing={
-            "version": "4.4.0",
-            "objects": [
-                {
-                    "type": "line",
-                    "version": "4.4.0",
-                    "originX": "center",
-                    "originY": "center",
-                    "left": width / 2,
-                    "top": h_line_min_y,
-                    "width": width,
-                    "height": 0,
-                    "fill": h_line_color_2,
-                    "stroke": h_line_color_2,
-                    "strokeWidth": stroke_width,
-                    "x1": -width / 2,
-                    "x2": width / 2,
-                    "y1": 0,
-                    "y2": 0,
-                },
-                {
-                    "type": "line",
-                    "version": "4.4.0",
-                    "originX": "center",
-                    "originY": "center",
-                    "left": width / 2,
-                    "top": h_line_max_y,
-                    "width": width,
-                    "height": 0,
-                    "fill": h_line_color_1,
-                    "stroke": h_line_color_1,
-                    "strokeWidth": stroke_width,
-                    "x1": -width / 2,
-                    "x2": width / 2,
-                    "y1": 0,
-                    "y2": 0,
-                },
-                {
-                    "type": "line",
-                    "version": "4.4.0",
-                    "originX": "center",
-                                    "originY": "center",
-                    "left": v_line_min_x,
-                    "top": height / 2,
-                    "width": 0,
-                    "height": height,
-                    "fill": v_line_color_1,
-                    "stroke": v_line_color_1,
-                    "strokeWidth": stroke_width,
-                    "x1": 0,
-                    "x2": 0,
-                    "y1": -height / 2,
-                    "y2": height / 2,
-                },
-                {
-                    "type": "line",
-                    "version": "4.4.0",
-                    "originX": "center",
-                    "originY": "center",
-                    "left": v_line_max_x,
-                    "top": height / 2,
-                    "width": 0,
-                    "height": height,
-                    "fill": v_line_color_2,
-                    "stroke": v_line_color_2,
-                    "strokeWidth": stroke_width,
-                    "x1": 0,
-                    "x2": 0,
-                    "y1": -height / 2,
-                    "y2": height / 2,
-                },
-            ],
-            "background": bg_color,
-        },
         height=height,
         width=width,
     )
-
-
-
 
 
 # Define the predict_button variable before it is used
