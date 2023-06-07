@@ -515,21 +515,17 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-col3, col4, col5 = st.columns((1,1,1))
+col3, col4= st.columns((1,1,1))
 if bg_image is not None:
     with col3:
         st.image(image,width=300)
     with col4:
         st.image(images_list[0],width=300)
-    with col5:
-        st.image(images_output[0],width=300)
 else:
     with col4:
         st.image(images_list[0],width=300)
     with col3:
         st.image(images_list[0],width=300)
-    with col5:
-        st.image(images_output[0],width=300)
 # Define the predict_button variable before it is used
 
 def get_table_download_link(df):
@@ -549,6 +545,9 @@ def calculate_and_download_values():
     df['Depth'] = np.linspace(40,100,df.shape[0])
     # Download the DataFrame as an Excel file
     st.session_state['df'] = df
+
+if 'df' in st.session_state:
+    st.write(area_data)
 
 
 st.markdown("<h2 style='text-align: left;'>Calculate and Download Values</h2>", unsafe_allow_html=True)
