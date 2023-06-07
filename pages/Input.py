@@ -372,7 +372,7 @@ else:
 
 @st.cache_data
 def create_array():
-    return np.range(10)
+    return np.array(range(10))
 
 if "images_output" in st.session_state:
     images_output = st.session_state["images_output"]
