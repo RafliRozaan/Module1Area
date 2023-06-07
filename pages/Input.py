@@ -553,4 +553,4 @@ if 'df' in st.session_state:
     with open('dataframe.csv') as f:
         lala, lele, lolo = st.columns((1,1,1))
         with lele:
-            st.download_button('Download CSV.csv',f,filename='Output.csv')
+            st.download_button('Download CSV.csv',f,file_name='Output.csv')
