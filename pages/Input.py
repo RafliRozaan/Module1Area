@@ -523,14 +523,14 @@ if bg_image is not None:
     with col4:
         st.image(images_list[0],width=300)
     with col5:
-        st.image(images_output[0],width=300)
+        st.image(images_output[0],width=images_output[1]/image[0].shape[1]*300)
 else:
     with col4:
         st.image(images_list[0],width=300)
     with col3:
         st.image(images_list[0],width=300)
     with col5:
-        st.image(images_output[0],width=images_output[1]/image.shape[1]*300)
+        st.image(images_output[0],width=images_output[1]/images_list[0].shape[1]*300)
 # Define the predict_button variable before it is used
 
 def get_table_download_link(df):
